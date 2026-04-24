@@ -244,7 +244,7 @@ public partial class GaugeControl : UserControl
             radius * 1.01,
             radius * 1.01);
 
-        DrawArcBand(dc, center, radius * 1.03, radius * 0.90, -88, -4, Color.FromArgb(54, 0, 0, 0));
+        DrawArcBand(dc, center, radius * 1.03, radius * 0.90, -88, 0, Color.FromArgb(54, 0, 0, 0));
         DrawArcBand(dc, center, radius * 1.02, radius * 0.91, 44, 112, Color.FromArgb(38, 0, 0, 0));
 
         dc.DrawEllipse(
@@ -304,7 +304,7 @@ public partial class GaugeControl : UserControl
     {
         var angle = NeedleAngle;
         var needleEnd = PointOnGauge(center, radius * 0.72, angle);
-        var needleTail = PointOnGauge(center, radius * 0.24, angle + 180);
+        var needleTail = PointOnGauge(center, radius * 0.13, angle + 180);
 
         var left = PointOnGauge(center, radius * 0.096, angle - 92);
         var right = PointOnGauge(center, radius * 0.096, angle + 92);

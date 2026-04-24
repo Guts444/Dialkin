@@ -12,6 +12,8 @@ This project follows semantic versioning where practical.
 - Native Windows 11 WPF app shell for desktop widgets.
 - Vista/Windows 7-inspired CPU Meter widget with paired CPU and RAM gauges.
 - Fresh vector-rendered chrome bezels, gauge faces, tick marks, warning color bands, red needles, shadows, and percent readouts.
+- Center hub rendering that keeps needle tails hidden, matching the original gadget style.
+- Inner bezel shading tuned to meet the 12 o'clock tick cleanly.
 - CPU usage sampling through Windows `GetSystemTimes`.
 - RAM usage sampling through Windows `GlobalMemoryStatusEx`.
 - Smooth needle animation between metric samples.
