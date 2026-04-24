@@ -39,7 +39,7 @@ public sealed class WidgetSettings
 
     public bool Locked { get; set; }
 
-    public double Opacity { get; set; } = 0.96;
+    public double Opacity { get; set; } = 1.0;
 
     public bool AlwaysOnTop { get; set; }
 
@@ -55,7 +55,7 @@ public sealed class WidgetSettings
 
     public WidgetSettings Normalize()
     {
-        Opacity = Math.Clamp(double.IsFinite(Opacity) ? Opacity : 0.96, 0.35, 1.0);
+        Opacity = Math.Clamp(double.IsFinite(Opacity) ? Opacity : 1.0, 0.35, 1.0);
         UpdateIntervalSeconds = Math.Clamp(UpdateIntervalSeconds, 1, 60);
         ThemeVariant = string.IsNullOrWhiteSpace(ThemeVariant) ? "VistaDark" : ThemeVariant;
         return this;
