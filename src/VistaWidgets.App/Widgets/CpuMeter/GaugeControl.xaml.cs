@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using FontFamily = System.Windows.Media.FontFamily;
 using Pen = System.Windows.Media.Pen;
@@ -85,7 +86,7 @@ public partial class GaugeControl : UserControl
         var dpi = VisualTreeHelper.GetDpi(this);
         var center = new Point(ActualWidth / 2, ActualHeight / 2);
         var radius = size / 2 - 5;
-        var faceRadius = radius * 0.82;
+        var faceRadius = radius * 0.86;
 
         DrawChromeBezel(drawingContext, center, radius);
         DrawFace(drawingContext, center, faceRadius);
@@ -146,25 +147,47 @@ public partial class GaugeControl : UserControl
         };
         outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 255, 255), 0.0));
         outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 244, 248, 250), 0.18));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 156, 165, 168), 0.42));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 72, 76, 78), 0.62));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 234, 238, 239), 0.78));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 23, 25, 26), 1.0));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 190, 198, 201), 0.44));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 92, 96, 99), 0.67));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 238, 242, 243), 0.84));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 43, 46, 48), 1.0));
         dc.DrawEllipse(outerChrome, new Pen(new SolidColorBrush(Color.FromArgb(235, 13, 14, 14)), 0.9), center, radius, radius);
+
+        DrawMetalReflectionBands(dc, center, radius);
 
         var innerChrome = new LinearGradientBrush(
             Color.FromArgb(255, 243, 247, 248),
-            Color.FromArgb(255, 54, 58, 60),
+            Color.FromArgb(255, 74, 78, 80),
             new Point(0.28, 0.05),
             new Point(0.72, 0.96));
-        dc.DrawEllipse(innerChrome, null, center, radius * 0.92, radius * 0.92);
+        dc.DrawEllipse(innerChrome, null, center, radius * 0.95, radius * 0.95);
 
         dc.DrawEllipse(
             null,
             new Pen(new SolidColorBrush(Color.FromArgb(210, 236, 241, 242)), Math.Max(0.7, radius * 0.016)),
             center,
-            radius * 0.89,
-            radius * 0.89);
+            radius * 0.92,
+            radius * 0.92);
+    }
+
+    private static void DrawMetalReflectionBands(DrawingContext dc, Point center, double radius)
+    {
+        var outer = radius * 0.985;
+        var inner = radius * 0.865;
+
+        DrawArcBand(dc, center, outer, inner, -170, -112, Color.FromArgb(150, 10, 12, 13));
+        DrawArcBand(dc, center, outer, inner, -112, -70, Color.FromArgb(165, 202, 211, 215));
+        DrawArcBand(dc, center, outer, inner, -70, -6, Color.FromArgb(195, 255, 255, 255));
+        DrawArcBand(dc, center, outer, inner, -6, 40, Color.FromArgb(140, 221, 229, 232));
+        DrawArcBand(dc, center, outer, inner, 40, 115, Color.FromArgb(170, 38, 42, 44));
+        DrawArcBand(dc, center, outer, inner, 115, 170, Color.FromArgb(125, 228, 235, 238));
+
+        dc.DrawEllipse(
+            null,
+            new Pen(new SolidColorBrush(Color.FromArgb(135, 255, 255, 255)), Math.Max(0.45, radius * 0.01)),
+            center,
+            radius * 0.78,
+            radius * 0.78);
     }
 
     private static void DrawFace(DrawingContext dc, Point center, double radius)
@@ -194,10 +217,12 @@ public partial class GaugeControl : UserControl
     {
         dc.DrawEllipse(
             null,
-            new Pen(new SolidColorBrush(Color.FromArgb(90, 0, 0, 0)), Math.Max(1.4, radius * 0.075)),
+            new Pen(new SolidColorBrush(Color.FromArgb(58, 0, 0, 0)), Math.Max(1.0, radius * 0.048)),
             center,
             radius * 1.01,
             radius * 1.01);
+
+        DrawArcBand(dc, center, radius * 1.03, radius * 0.89, -74, 8, Color.FromArgb(75, 0, 0, 0));
 
         dc.DrawEllipse(
             null,
@@ -209,8 +234,12 @@ public partial class GaugeControl : UserControl
 
     private static void DrawWarningBands(DrawingContext dc, Point center, double radius)
     {
-        DrawArcBand(dc, center, radius * 0.84, radius * 0.62, 58, 92, Color.FromArgb(210, 244, 195, 73));
-        DrawArcBand(dc, center, radius * 0.84, radius * 0.62, 92, 126, Color.FromArgb(230, 220, 42, 43));
+        var warningBrush = new LinearGradientBrush(
+            Color.FromArgb(220, 247, 204, 74),
+            Color.FromArgb(235, 216, 35, 42),
+            new Point(0.38, 0.36),
+            new Point(0.92, 0.92));
+        DrawArcBand(dc, center, radius * 0.84, radius * 0.62, 58, 126, warningBrush);
 
         DrawArcBand(dc, center, radius * 0.83, radius * 0.66, -126, -108, Color.FromArgb(190, 196, 38, 42));
         DrawArcBand(dc, center, radius * 0.83, radius * 0.66, -48, -27, Color.FromArgb(190, 196, 38, 42));
@@ -240,11 +269,11 @@ public partial class GaugeControl : UserControl
     private void DrawNeedle(DrawingContext dc, Point center, double radius)
     {
         var angle = NeedleAngle;
-        var needleEnd = PointOnGauge(center, radius * 0.70, angle);
-        var needleTail = PointOnGauge(center, radius * 0.20, angle + 180);
+        var needleEnd = PointOnGauge(center, radius * 0.74, angle);
+        var needleTail = PointOnGauge(center, radius * 0.22, angle + 180);
 
-        var left = PointOnGauge(center, radius * 0.055, angle - 92);
-        var right = PointOnGauge(center, radius * 0.055, angle + 92);
+        var left = PointOnGauge(center, radius * 0.074, angle - 92);
+        var right = PointOnGauge(center, radius * 0.074, angle + 92);
 
         var needle = new StreamGeometry();
         using (var context = needle.Open())
@@ -269,12 +298,25 @@ public partial class GaugeControl : UserControl
 
     private void DrawCenterIcon(DrawingContext dc, Point center, double radius)
     {
-        var iconSize = radius * 0.36;
+        var iconSize = radius * 0.34;
         var iconRect = new Rect(
             center.X - iconSize / 2,
-            center.Y - iconSize * 0.18,
+            center.Y - iconSize * 0.20,
             iconSize,
             iconSize);
+
+        dc.DrawEllipse(
+            new RadialGradientBrush(Color.FromArgb(255, 247, 249, 250), Color.FromArgb(255, 112, 118, 121))
+            {
+                GradientOrigin = new Point(0.34, 0.22),
+                Center = new Point(0.5, 0.55),
+                RadiusX = 0.70,
+                RadiusY = 0.70
+            },
+            new Pen(new SolidColorBrush(Color.FromArgb(190, 73, 76, 78)), Math.Max(0.45, radius * 0.015)),
+            new Point(center.X, center.Y - iconSize * 0.02),
+            iconSize * 0.70,
+            iconSize * 0.70);
 
         var chipBrush = new LinearGradientBrush(
             Color.FromArgb(255, 238, 241, 242),
@@ -301,6 +343,13 @@ public partial class GaugeControl : UserControl
         {
             DrawCpuCore(dc, iconRect);
         }
+
+        dc.DrawEllipse(
+            new SolidColorBrush(Color.FromArgb(215, 184, 38, 38)),
+            new Pen(new SolidColorBrush(Color.FromArgb(175, 255, 245, 245)), Math.Max(0.35, radius * 0.01)),
+            PointOnGauge(center, radius * 0.62, -130),
+            Math.Max(2.2, radius * 0.055),
+            Math.Max(2.2, radius * 0.055));
     }
 
     private static void DrawCpuCore(DrawingContext dc, Rect iconRect)
@@ -344,9 +393,9 @@ public partial class GaugeControl : UserControl
             return;
         }
 
-        var width = radius * 0.88;
+        var width = radius * 0.96;
         var height = radius * 0.33;
-        var rect = new Rect(center.X - width / 2, center.Y + radius * 0.42, width, height);
+        var rect = new Rect(center.X - width / 2, center.Y + radius * 0.43, width, height);
 
         dc.DrawRoundedRectangle(
             new SolidColorBrush(Color.FromArgb(235, 26, 25, 25)),
@@ -355,8 +404,8 @@ public partial class GaugeControl : UserControl
             2.0,
             2.0);
 
-        var text = CreateText($"{Value:0}%", Math.Max(8.5, radius * 0.28), FontWeights.Bold, Color.FromArgb(255, 255, 255, 255), pixelsPerDip);
-        dc.DrawText(text, new Point(center.X - text.Width / 2, rect.Top + (rect.Height - text.Height) / 2 - 0.2));
+        var text = CreateText($"{Value:0}%", Math.Max(9, radius * 0.30), FontWeights.Bold, Color.FromArgb(255, 255, 255, 255), pixelsPerDip);
+        dc.DrawText(text, new Point(rect.Left + (rect.Width - text.Width) / 2, rect.Top + (rect.Height - text.Height) / 2 - 0.25));
     }
 
     private static void DrawGlassHighlight(DrawingContext dc, Point center, double radius)
@@ -381,6 +430,11 @@ public partial class GaugeControl : UserControl
 
     private static void DrawArcBand(DrawingContext dc, Point center, double outerRadius, double innerRadius, double startAngle, double endAngle, Color color)
     {
+        DrawArcBand(dc, center, outerRadius, innerRadius, startAngle, endAngle, new SolidColorBrush(color));
+    }
+
+    private static void DrawArcBand(DrawingContext dc, Point center, double outerRadius, double innerRadius, double startAngle, double endAngle, Brush brush)
+    {
         var geometry = new StreamGeometry();
         using (var context = geometry.Open())
         {
@@ -397,7 +451,7 @@ public partial class GaugeControl : UserControl
         }
 
         geometry.Freeze();
-        dc.DrawGeometry(new SolidColorBrush(color), null, geometry);
+        dc.DrawGeometry(brush, null, geometry);
     }
 
     private static Rect InflateByFactor(Rect rect, double factor)

@@ -24,7 +24,7 @@ public partial class CpuMeterWidget : UserControl, IWidget, IWidgetSystemEvents
 
     public string DisplayName => "CPU Meter";
 
-    public Size DefaultSize => new(170, 128);
+    public Size DefaultSize => new(184, 128);
 
     public FrameworkElement CreateView()
     {
