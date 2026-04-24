@@ -169,6 +169,21 @@ public partial class GaugeControl : UserControl
             radius * 0.92,
             radius * 0.92);
 
+        DrawArcStroke(
+            dc,
+            center,
+            radius * 0.955,
+            170,
+            180,
+            new Pen(new SolidColorBrush(Color.FromArgb(215, 24, 27, 29)), Math.Max(0.8, radius * 0.018)));
+        DrawArcStroke(
+            dc,
+            center,
+            radius * 0.955,
+            -180,
+            -170,
+            new Pen(new SolidColorBrush(Color.FromArgb(215, 24, 27, 29)), Math.Max(0.8, radius * 0.018)));
+
         dc.DrawEllipse(
             null,
             new Pen(new SolidColorBrush(Color.FromArgb(190, 18, 21, 22)), Math.Max(0.6, radius * 0.014)),
@@ -187,7 +202,7 @@ public partial class GaugeControl : UserControl
         DrawArcBand(dc, center, outer, inner, -71, -7, Color.FromArgb(210, 255, 255, 255));
         DrawArcBand(dc, center, outer, inner, -7, 38, Color.FromArgb(158, 221, 229, 232));
         DrawArcBand(dc, center, outer, inner, 38, 116, Color.FromArgb(188, 35, 39, 41));
-        DrawArcBand(dc, center, outer, inner, 116, 170, Color.FromArgb(138, 228, 235, 238));
+        DrawArcBand(dc, center, outer, inner, 116, 170, Color.FromArgb(170, 31, 35, 37));
 
         dc.DrawEllipse(
             null,
@@ -242,57 +257,26 @@ public partial class GaugeControl : UserControl
 
     private static void DrawWarningBands(DrawingContext dc, Point center, double radius)
     {
-        DrawSweptWarningBand(dc, center, radius * 0.86, radius * 0.61, 53, 136);
-
-        DrawArcBand(dc, center, radius * 0.84, radius * 0.66, -126, -108, Color.FromArgb(205, 196, 37, 41));
-        DrawArcBand(dc, center, radius * 0.84, radius * 0.66, -49, -28, Color.FromArgb(198, 196, 37, 41));
-
-        DrawArcBand(dc, center, radius * 0.86, radius * 0.82, 52, 135, Color.FromArgb(52, 255, 255, 255));
-    }
-
-    private static void DrawSweptWarningBand(DrawingContext dc, Point center, double outerRadius, double innerRadius, double startAngle, double endAngle)
-    {
-        const int segments = 34;
-        var sweep = endAngle - startAngle;
-        for (var i = 0; i < segments; i++)
+        var warningStart = GaugeMath.MapValueToAngle(70);
+        var warningEnd = GaugeMath.MaximumAngle;
+        var markerOuterRadius = radius;
+        var markerInnerRadius = radius * 0.70;
+        var colorOuterRadius = markerOuterRadius;
+        var warningInnerRadius = markerInnerRadius;
+        var startInnerRadius = markerInnerRadius;
+        var warningBrush = new LinearGradientBrush
         {
-            var t0 = (double)i / segments;
-            var t1 = (double)(i + 1) / segments;
-            var mid = (t0 + t1) / 2.0;
-            var segmentStart = startAngle + sweep * t0 - 0.22;
-            var segmentEnd = startAngle + sweep * t1 + 0.22;
-            DrawArcBand(dc, center, outerRadius, innerRadius, segmentStart, segmentEnd, GetWarningColor(mid));
-        }
-    }
+            StartPoint = new Point(0.58, 0.10),
+            EndPoint = new Point(0.94, 0.96)
+        };
+        warningBrush.GradientStops.Add(new GradientStop(Color.FromArgb(210, 255, 226, 92), 0.00));
+        warningBrush.GradientStops.Add(new GradientStop(Color.FromArgb(224, 249, 159, 55), 0.36));
+        warningBrush.GradientStops.Add(new GradientStop(Color.FromArgb(236, 238, 82, 43), 0.62));
+        warningBrush.GradientStops.Add(new GradientStop(Color.FromArgb(246, 218, 28, 38), 1.00));
 
-    private static Color GetWarningColor(double t)
-    {
-        var yellow = Color.FromArgb(210, 255, 226, 92);
-        var amber = Color.FromArgb(224, 249, 159, 55);
-        var orange = Color.FromArgb(236, 238, 82, 43);
-        var red = Color.FromArgb(246, 218, 28, 38);
+        DrawArcBand(dc, center, colorOuterRadius, warningInnerRadius, warningStart, warningEnd, warningBrush);
 
-        if (t < 0.36)
-        {
-            return LerpColor(yellow, amber, t / 0.36);
-        }
-
-        if (t < 0.62)
-        {
-            return LerpColor(amber, orange, (t - 0.36) / 0.26);
-        }
-
-        return LerpColor(orange, red, (t - 0.62) / 0.38);
-    }
-
-    private static Color LerpColor(Color start, Color end, double t)
-    {
-        t = Math.Clamp(t, 0.0, 1.0);
-        return Color.FromArgb(
-            (byte)Math.Round(start.A + (end.A - start.A) * t),
-            (byte)Math.Round(start.R + (end.R - start.R) * t),
-            (byte)Math.Round(start.G + (end.G - start.G) * t),
-            (byte)Math.Round(start.B + (end.B - start.B) * t));
+        DrawArcBand(dc, center, colorOuterRadius, startInnerRadius, GaugeMath.MinimumAngle, GaugeMath.MapValueToAngle(5), Color.FromArgb(205, 196, 37, 41));
     }
 
     private static void DrawTicks(DrawingContext dc, Point center, double radius, double pixelsPerDip)
@@ -311,7 +295,7 @@ public partial class GaugeControl : UserControl
             var angle = GaugeMath.MapValueToAngle(value);
             var isMajor = i % 2 == 0;
             var start = PointOnGauge(center, radius * (isMajor ? 0.70 : 0.80), angle);
-            var end = PointOnGauge(center, radius * 0.945, angle);
+            var end = PointOnGauge(center, radius, angle);
             dc.DrawLine(isMajor ? majorPen : minorPen, start, end);
         }
     }
@@ -399,12 +383,6 @@ public partial class GaugeControl : UserControl
             DrawCpuCore(dc, iconRect);
         }
 
-        dc.DrawEllipse(
-            new SolidColorBrush(Color.FromArgb(128, 188, 194, 196)),
-            new Pen(new SolidColorBrush(Color.FromArgb(190, 255, 255, 255)), Math.Max(0.35, radius * 0.01)),
-            PointOnGauge(center, radius * 0.47, -120),
-            Math.Max(1.8, radius * 0.044),
-            Math.Max(1.8, radius * 0.044));
     }
 
     private static void DrawHubDimpleRing(DrawingContext dc, Point center, double radius)
@@ -550,6 +528,23 @@ public partial class GaugeControl : UserControl
     private static void DrawArcBand(DrawingContext dc, Point center, double outerRadius, double innerRadius, double startAngle, double endAngle, Color color)
     {
         DrawArcBand(dc, center, outerRadius, innerRadius, startAngle, endAngle, new SolidColorBrush(color));
+    }
+
+    private static void DrawArcStroke(DrawingContext dc, Point center, double radius, double startAngle, double endAngle, Pen pen)
+    {
+        var geometry = new StreamGeometry();
+        using (var context = geometry.Open())
+        {
+            var start = PointOnGauge(center, radius, startAngle);
+            var end = PointOnGauge(center, radius, endAngle);
+            var largeArc = Math.Abs(endAngle - startAngle) > 180;
+
+            context.BeginFigure(start, isFilled: false, isClosed: false);
+            context.ArcTo(end, new Size(radius, radius), 0, largeArc, SweepDirection.Clockwise, isStroked: true, isSmoothJoin: true);
+        }
+
+        geometry.Freeze();
+        dc.DrawGeometry(null, pen, geometry);
     }
 
     private static void DrawArcBand(DrawingContext dc, Point center, double outerRadius, double innerRadius, double startAngle, double endAngle, Brush brush)
