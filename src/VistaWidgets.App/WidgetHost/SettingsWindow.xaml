@@ -43,12 +43,45 @@
 
             <TextBlock Text="Opacity"
                        Margin="0,6,0,4" />
-            <Slider x:Name="OpacitySlider"
-                    Minimum="0.35"
-                    Maximum="1"
-                    TickFrequency="0.05"
-                    IsSnapToTickEnabled="False"
-                    ValueChanged="OpacitySlider_OnValueChanged" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="54" />
+                </Grid.ColumnDefinitions>
+                <Slider x:Name="OpacitySlider"
+                        Minimum="0.35"
+                        Maximum="1"
+                        Value="1"
+                        TickFrequency="0.05"
+                        IsSnapToTickEnabled="False"
+                        ValueChanged="OpacitySlider_OnValueChanged" />
+                <TextBlock x:Name="OpacityValueText"
+                           Grid.Column="1"
+                           Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right" />
+            </Grid>
+
+            <TextBlock Text="Size"
+                       Margin="0,12,0,4" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="54" />
+                </Grid.ColumnDefinitions>
+                <Slider x:Name="ScaleSlider"
+                        Minimum="0.8"
+                        Maximum="1.8"
+                        Value="1.15"
+                        TickFrequency="0.05"
+                        IsSnapToTickEnabled="False"
+                        ValueChanged="ScaleSlider_OnValueChanged" />
+                <TextBlock x:Name="ScaleValueText"
+                           Grid.Column="1"
+                           Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right" />
+            </Grid>
 
             <Grid Margin="0,14,0,0">
                 <Grid.ColumnDefinitions>

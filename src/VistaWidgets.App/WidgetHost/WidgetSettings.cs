@@ -41,6 +41,8 @@ public sealed class WidgetSettings
 
     public double Opacity { get; set; } = 1.0;
 
+    public double Scale { get; set; } = 1.15;
+
     public bool AlwaysOnTop { get; set; }
 
     public bool ClickThrough { get; set; }
@@ -56,6 +58,7 @@ public sealed class WidgetSettings
     public WidgetSettings Normalize()
     {
         Opacity = Math.Clamp(double.IsFinite(Opacity) ? Opacity : 1.0, 0.35, 1.0);
+        Scale = Math.Clamp(double.IsFinite(Scale) && Scale > 0 ? Scale : 1.15, 0.8, 1.8);
         UpdateIntervalSeconds = Math.Clamp(UpdateIntervalSeconds, 1, 60);
         ThemeVariant = string.IsNullOrWhiteSpace(ThemeVariant) ? "VistaDark" : ThemeVariant;
         return this;

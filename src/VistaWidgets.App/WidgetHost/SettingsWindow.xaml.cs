@@ -7,7 +7,7 @@ namespace VistaWidgets.App.WidgetHost;
 public partial class SettingsWindow : Window
 {
     private readonly WidgetManager _manager;
-    private bool _isLoading;
+    private bool _isLoading = true;
 
     public SettingsWindow(WidgetManager manager)
     {
@@ -27,6 +27,8 @@ public partial class SettingsWindow : Window
         ClickThroughCheckBox.IsChecked = settings.ClickThrough;
         StartWithWindowsCheckBox.IsChecked = _manager.StartWithWindows;
         OpacitySlider.Value = settings.Opacity;
+        ScaleSlider.Value = settings.Scale;
+        UpdateValueLabels();
 
         foreach (ComboBoxItem item in UpdateIntervalComboBox.Items)
         {
@@ -89,10 +91,24 @@ public partial class SettingsWindow : Window
     {
         if (_isLoading)
         {
+            UpdateValueLabels();
             return;
         }
 
         _manager.UpdateWidgetSettings(CpuMeterWidget.WidgetId, settings => settings.Opacity = e.NewValue);
+        UpdateValueLabels();
+    }
+
+    private void ScaleSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+    {
+        if (_isLoading)
+        {
+            UpdateValueLabels();
+            return;
+        }
+
+        _manager.UpdateWidgetSettings(CpuMeterWidget.WidgetId, settings => settings.Scale = e.NewValue);
+        UpdateValueLabels();
     }
 
     private void UpdateIntervalComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -116,5 +132,18 @@ public partial class SettingsWindow : Window
     private void CloseButton_OnClick(object sender, RoutedEventArgs e)
     {
         Close();
+    }
+
+    private void UpdateValueLabels()
+    {
+        if (OpacityValueText is not null && OpacitySlider is not null)
+        {
+            OpacityValueText.Text = $"{OpacitySlider.Value:P0}";
+        }
+
+        if (ScaleValueText is not null && ScaleSlider is not null)
+        {
+            ScaleValueText.Text = $"{ScaleSlider.Value:P0}";
+        }
     }
 }

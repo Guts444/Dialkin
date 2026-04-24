@@ -2,7 +2,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using VistaWidgets.App.Infrastructure;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Point = System.Windows.Point;
 
 namespace VistaWidgets.App.WidgetHost;
 
@@ -11,8 +14,14 @@ public sealed class WidgetWindow : Window
     private readonly IWidget _widget;
     private readonly WidgetSettings _settings;
     private readonly WidgetWindowOptions _options;
+    private readonly Viewbox _scaledContent;
     private nint _hwnd;
     private bool _allowClose;
+    private bool _isDragging;
+    private bool _isApplyingBounds;
+    private Point _dragStartScreen;
+    private Point _dragStartWindow;
+    private double _dragDpiScale = 1.0;
 
     public WidgetWindow(IWidget widget, WidgetSettings settings, WidgetWindowOptions options)
     {
@@ -20,12 +29,14 @@ public sealed class WidgetWindow : Window
         _settings = settings;
         _options = options;
 
-        Width = widget.DefaultSize.Width;
-        Height = widget.DefaultSize.Height;
-        MinWidth = widget.DefaultSize.Width;
-        MinHeight = widget.DefaultSize.Height;
-        MaxWidth = widget.DefaultSize.Width;
-        MaxHeight = widget.DefaultSize.Height;
+        _scaledContent = new Viewbox
+        {
+            Stretch = Stretch.Uniform,
+            StretchDirection = StretchDirection.Both,
+            Child = widget.CreateView()
+        };
+
+        SetScaledSize();
         WindowStyle = WindowStyle.None;
         AllowsTransparency = true;
         Background = System.Windows.Media.Brushes.Transparent;
@@ -35,7 +46,7 @@ public sealed class WidgetWindow : Window
         UseLayoutRounding = true;
         SnapsToDevicePixels = true;
         Title = widget.DisplayName;
-        Content = widget.CreateView();
+        Content = _scaledContent;
 
         ContextMenu = BuildContextMenu();
         ContextMenuOpening += (_, _) => ContextMenu = BuildContextMenu();
@@ -43,6 +54,9 @@ public sealed class WidgetWindow : Window
         Loaded += (_, _) => RestorePosition();
         LocationChanged += (_, _) => SavePosition();
         MouseLeftButtonDown += OnMouseLeftButtonDown;
+        MouseMove += OnMouseMove;
+        MouseLeftButtonUp += OnMouseLeftButtonUp;
+        LostMouseCapture += (_, _) => _isDragging = false;
         SourceInitialized += OnSourceInitialized;
 
         ApplySettings();
@@ -83,8 +97,10 @@ public sealed class WidgetWindow : Window
     public void ApplySettings()
     {
         _settings.Normalize();
+        SetScaledSize();
         Topmost = _settings.AlwaysOnTop;
         Opacity = _settings.Opacity;
+        ClampToVirtualScreen();
 
         if (_hwnd != nint.Zero)
         {
@@ -102,12 +118,7 @@ public sealed class WidgetWindow : Window
 
     public void EnsureVisibleOnAnyMonitor()
     {
-        var virtualScreen = DpiHelper.GetVirtualScreenDipBounds();
-        var widgetRect = new Rect(Left, Top, Width, Height);
-        if (!virtualScreen.IntersectsWith(widgetRect))
-        {
-            ResetPosition();
-        }
+        ClampToVirtualScreen();
     }
 
     public void CloseForShutdown()
@@ -154,7 +165,7 @@ public sealed class WidgetWindow : Window
 
     private void SavePosition()
     {
-        if (!IsLoaded)
+        if (!IsLoaded || _isDragging || _isApplyingBounds)
         {
             return;
         }
@@ -171,14 +182,91 @@ public sealed class WidgetWindow : Window
             return;
         }
 
-        try
+        _isDragging = true;
+        _dragStartScreen = PointToScreen(e.GetPosition(this));
+        _dragStartWindow = new Point(Left, Top);
+        _dragDpiScale = Math.Max(0.1, DpiHelper.GetScale(this));
+        CaptureMouse();
+        e.Handled = true;
+    }
+
+    private void OnMouseMove(object sender, MouseEventArgs e)
+    {
+        if (!_isDragging || e.LeftButton != MouseButtonState.Pressed)
         {
-            DragMove();
+            return;
         }
-        catch (InvalidOperationException)
+
+        var currentScreen = PointToScreen(e.GetPosition(this));
+        var left = _dragStartWindow.X + (currentScreen.X - _dragStartScreen.X) / _dragDpiScale;
+        var top = _dragStartWindow.Y + (currentScreen.Y - _dragStartScreen.Y) / _dragDpiScale;
+        var clamped = ClampPointToVirtualScreen(left, top);
+
+        Left = clamped.X;
+        Top = clamped.Y;
+        e.Handled = true;
+    }
+
+    private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_isDragging)
         {
-            // DragMove can throw if Windows has already ended the mouse gesture.
+            return;
         }
+
+        _isDragging = false;
+        ReleaseMouseCapture();
+        SavePosition();
+        e.Handled = true;
+    }
+
+    private void SetScaledSize()
+    {
+        var width = Math.Round(_widget.DefaultSize.Width * _settings.Scale);
+        var height = Math.Round(_widget.DefaultSize.Height * _settings.Scale);
+
+        MinWidth = width;
+        MinHeight = height;
+        MaxWidth = width;
+        MaxHeight = height;
+        Width = width;
+        Height = height;
+    }
+
+    private void ClampToVirtualScreen()
+    {
+        var clamped = ClampPointToVirtualScreen(Left, Top);
+        if (Math.Abs(clamped.X - Left) < 0.01 && Math.Abs(clamped.Y - Top) < 0.01)
+        {
+            return;
+        }
+
+        _isApplyingBounds = true;
+        Left = clamped.X;
+        Top = clamped.Y;
+        _isApplyingBounds = false;
+        SavePosition();
+    }
+
+    private Point ClampPointToVirtualScreen(double left, double top)
+    {
+        var bounds = DpiHelper.GetVirtualScreenDipBounds();
+        if (!double.IsFinite(left))
+        {
+            left = Math.Max(bounds.Left, bounds.Right - Width - 48);
+        }
+
+        if (!double.IsFinite(top))
+        {
+            top = bounds.Top + 80;
+        }
+
+        var maxLeft = Math.Max(bounds.Left, bounds.Right - Width);
+        var maxTop = Math.Max(bounds.Top, bounds.Bottom - Height);
+
+        return new Point(
+            Math.Clamp(left, bounds.Left, maxLeft),
+            Math.Clamp(top, bounds.Top, maxTop));
     }
 
     private ContextMenu BuildContextMenu()

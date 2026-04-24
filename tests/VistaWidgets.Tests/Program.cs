@@ -62,6 +62,7 @@ static void SettingsRoundTrips()
         Top = 456,
         Locked = true,
         Opacity = 0.75,
+        Scale = 1.35,
         AlwaysOnTop = true,
         ClickThrough = true,
         UpdateIntervalSeconds = 5
@@ -76,6 +77,7 @@ static void SettingsRoundTrips()
     AssertNear(456, widget.Top ?? 0);
     AssertTrue(widget.Locked, "Locked should round-trip.");
     AssertNear(0.75, widget.Opacity);
+    AssertNear(1.35, widget.Scale);
     AssertTrue(widget.AlwaysOnTop, "AlwaysOnTop should round-trip.");
     AssertTrue(widget.ClickThrough, "ClickThrough should round-trip.");
     AssertTrue(widget.UpdateIntervalSeconds == 5, "UpdateIntervalSeconds should round-trip.");

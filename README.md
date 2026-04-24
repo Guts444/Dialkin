@@ -10,6 +10,7 @@ Native Windows 11 recreation of the Windows Vista / Windows 7 CPU Meter gadget, 
 - Values update once per second by default.
 - Needles animate smoothly between samples.
 - Widget is frameless, transparent, draggable, high-DPI aware, and saved/restored between launches.
+- Size and opacity can be adjusted from Settings.
 - Tray icon and right-click menus are included.
 
 ## Build And Run

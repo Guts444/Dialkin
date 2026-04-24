@@ -84,11 +84,12 @@ public partial class GaugeControl : UserControl
 
         var dpi = VisualTreeHelper.GetDpi(this);
         var center = new Point(ActualWidth / 2, ActualHeight / 2);
-        var radius = size / 2 - 4;
-        var faceRadius = radius * 0.76;
+        var radius = size / 2 - 5;
+        var faceRadius = radius * 0.82;
 
         DrawChromeBezel(drawingContext, center, radius);
         DrawFace(drawingContext, center, faceRadius);
+        DrawInnerBezelShadow(drawingContext, center, faceRadius);
         DrawWarningBands(drawingContext, center, faceRadius);
         DrawTicks(drawingContext, center, faceRadius, dpi.PixelsPerDip);
         DrawNeedle(drawingContext, center, faceRadius);
@@ -130,31 +131,40 @@ public partial class GaugeControl : UserControl
     private static void DrawChromeBezel(DrawingContext dc, Point center, double radius)
     {
         dc.DrawEllipse(
-            new SolidColorBrush(Color.FromArgb(90, 0, 0, 0)),
+            new SolidColorBrush(Color.FromArgb(75, 0, 0, 0)),
             null,
             new Point(center.X + radius * 0.06, center.Y + radius * 0.07),
-            radius * 0.98,
-            radius * 0.98);
+            radius * 0.94,
+            radius * 0.94);
 
         var outerChrome = new RadialGradientBrush
         {
-            GradientOrigin = new Point(0.32, 0.24),
-            Center = new Point(0.5, 0.55),
-            RadiusX = 0.76,
-            RadiusY = 0.78
+            GradientOrigin = new Point(0.30, 0.22),
+            Center = new Point(0.52, 0.56),
+            RadiusX = 0.82,
+            RadiusY = 0.82
         };
         outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 255, 255), 0.0));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 184, 190, 191), 0.34));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 35, 36, 36), 0.64));
-        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 4, 5, 5), 1.0));
-        dc.DrawEllipse(outerChrome, new Pen(new SolidColorBrush(Color.FromArgb(230, 11, 12, 12)), 1.0), center, radius, radius);
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 244, 248, 250), 0.18));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 156, 165, 168), 0.42));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 72, 76, 78), 0.62));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 234, 238, 239), 0.78));
+        outerChrome.GradientStops.Add(new GradientStop(Color.FromArgb(255, 23, 25, 26), 1.0));
+        dc.DrawEllipse(outerChrome, new Pen(new SolidColorBrush(Color.FromArgb(235, 13, 14, 14)), 0.9), center, radius, radius);
 
         var innerChrome = new LinearGradientBrush(
-            Color.FromArgb(245, 20, 21, 22),
-            Color.FromArgb(245, 210, 216, 219),
-            new Point(0.25, 0.9),
-            new Point(0.75, 0.05));
-        dc.DrawEllipse(innerChrome, null, center, radius * 0.88, radius * 0.88);
+            Color.FromArgb(255, 243, 247, 248),
+            Color.FromArgb(255, 54, 58, 60),
+            new Point(0.28, 0.05),
+            new Point(0.72, 0.96));
+        dc.DrawEllipse(innerChrome, null, center, radius * 0.92, radius * 0.92);
+
+        dc.DrawEllipse(
+            null,
+            new Pen(new SolidColorBrush(Color.FromArgb(210, 236, 241, 242)), Math.Max(0.7, radius * 0.016)),
+            center,
+            radius * 0.89,
+            radius * 0.89);
     }
 
     private static void DrawFace(DrawingContext dc, Point center, double radius)
@@ -167,9 +177,9 @@ public partial class GaugeControl : UserControl
             RadiusY = 0.76
         };
         face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 255, 255, 255), 0.0));
-        face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 248, 248, 245), 0.54));
-        face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 204, 204, 198), 0.82));
-        face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 150, 151, 148), 1.0));
+        face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 252, 252, 249), 0.58));
+        face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 221, 221, 216), 0.84));
+        face.GradientStops.Add(new GradientStop(Color.FromArgb(255, 171, 172, 168), 1.0));
         dc.DrawEllipse(face, new Pen(new SolidColorBrush(Color.FromArgb(170, 65, 66, 66)), 0.8), center, radius, radius);
 
         dc.DrawEllipse(
@@ -178,6 +188,23 @@ public partial class GaugeControl : UserControl
             center,
             radius * 0.92,
             radius * 0.92);
+    }
+
+    private static void DrawInnerBezelShadow(DrawingContext dc, Point center, double radius)
+    {
+        dc.DrawEllipse(
+            null,
+            new Pen(new SolidColorBrush(Color.FromArgb(90, 0, 0, 0)), Math.Max(1.4, radius * 0.075)),
+            center,
+            radius * 1.01,
+            radius * 1.01);
+
+        dc.DrawEllipse(
+            null,
+            new Pen(new SolidColorBrush(Color.FromArgb(95, 255, 255, 255)), Math.Max(0.55, radius * 0.018)),
+            center,
+            radius * 0.93,
+            radius * 0.93);
     }
 
     private static void DrawWarningBands(DrawingContext dc, Point center, double radius)
@@ -317,8 +344,8 @@ public partial class GaugeControl : UserControl
             return;
         }
 
-        var width = radius * 0.78;
-        var height = radius * 0.29;
+        var width = radius * 0.88;
+        var height = radius * 0.33;
         var rect = new Rect(center.X - width / 2, center.Y + radius * 0.42, width, height);
 
         dc.DrawRoundedRectangle(
@@ -328,7 +355,7 @@ public partial class GaugeControl : UserControl
             2.0,
             2.0);
 
-        var text = CreateText($"{Value:0}%", Math.Max(7, radius * 0.21), FontWeights.Bold, Color.FromArgb(255, 255, 255, 255), pixelsPerDip);
+        var text = CreateText($"{Value:0}%", Math.Max(8.5, radius * 0.28), FontWeights.Bold, Color.FromArgb(255, 255, 255, 255), pixelsPerDip);
         dc.DrawText(text, new Point(center.X - text.Width / 2, rect.Top + (rect.Height - text.Height) / 2 - 0.2));
     }
 
