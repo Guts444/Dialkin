@@ -8,3 +8,6 @@ TestResults/
 *.suo
 *.cache
 *.log
+/artifacts/
+*.zip
+/RELEASE_NOTES.md

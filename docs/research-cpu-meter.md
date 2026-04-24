@@ -27,4 +27,6 @@ For this project, the research implies a recreation should preserve the CPU Mete
 
 ## Visual Notes
 
-The target is the familiar Vista-era small glass gadget: rounded translucent dark body, glossy highlight, soft shadow, two circular analog gauges, red needles, labels, and percent readouts. The recreation should feel nostalgic and simple rather than becoming a modern dashboard.
+The target is the familiar Vista-era small glass gadget: two overlapping circular analog gauges, chrome rings, off-white faces, red needles, dark percent readouts, soft shared shadow, and warm warning color bands near the high end of each dial. The current recreation avoids a separate backplate and instead makes the CPU and RAM gauges connect visually through overlap, matching the compact look of the original reference more closely.
+
+The recreation should feel nostalgic and simple rather than becoming a modern dashboard.
