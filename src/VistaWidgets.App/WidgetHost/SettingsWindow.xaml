@@ -1,0 +1,84 @@
+<Window x:Class="VistaWidgets.App.WidgetHost.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Vista Widgets Settings"
+        Width="380"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False">
+    <Border Padding="18"
+            Background="#FFF7F8FA">
+        <StackPanel>
+            <TextBlock Text="CPU Meter"
+                       FontSize="16"
+                       FontWeight="SemiBold"
+                       Margin="0,0,0,10" />
+
+            <CheckBox x:Name="ShowCpuMeterCheckBox"
+                      Content="Show CPU Meter"
+                      Margin="0,4"
+                      Checked="ShowCpuMeterCheckBox_OnChanged"
+                      Unchecked="ShowCpuMeterCheckBox_OnChanged" />
+            <CheckBox x:Name="LockedCheckBox"
+                      Content="Lock position"
+                      Margin="0,4"
+                      Checked="WidgetSettingsCheckBox_OnChanged"
+                      Unchecked="WidgetSettingsCheckBox_OnChanged" />
+            <CheckBox x:Name="AlwaysOnTopCheckBox"
+                      Content="Always on top"
+                      Margin="0,4"
+                      Checked="WidgetSettingsCheckBox_OnChanged"
+                      Unchecked="WidgetSettingsCheckBox_OnChanged" />
+            <CheckBox x:Name="ClickThroughCheckBox"
+                      Content="Click-through mode"
+                      Margin="0,4"
+                      Checked="WidgetSettingsCheckBox_OnChanged"
+                      Unchecked="WidgetSettingsCheckBox_OnChanged" />
+            <CheckBox x:Name="StartWithWindowsCheckBox"
+                      Content="Start with Windows"
+                      Margin="0,4,0,14"
+                      Checked="StartWithWindowsCheckBox_OnChanged"
+                      Unchecked="StartWithWindowsCheckBox_OnChanged" />
+
+            <TextBlock Text="Opacity"
+                       Margin="0,6,0,4" />
+            <Slider x:Name="OpacitySlider"
+                    Minimum="0.35"
+                    Maximum="1"
+                    TickFrequency="0.05"
+                    IsSnapToTickEnabled="False"
+                    ValueChanged="OpacitySlider_OnValueChanged" />
+
+            <Grid Margin="0,14,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="150" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Update interval"
+                           VerticalAlignment="Center" />
+                <ComboBox x:Name="UpdateIntervalComboBox"
+                          Grid.Column="1"
+                          SelectionChanged="UpdateIntervalComboBox_OnSelectionChanged">
+                    <ComboBoxItem Content="1 second" Tag="1" />
+                    <ComboBoxItem Content="2 seconds" Tag="2" />
+                    <ComboBoxItem Content="5 seconds" Tag="5" />
+                    <ComboBoxItem Content="10 seconds" Tag="10" />
+                </ComboBox>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,20,0,0">
+                <Button Content="Reset position"
+                        MinWidth="104"
+                        Margin="0,0,8,0"
+                        Click="ResetPositionButton_OnClick" />
+                <Button Content="Close"
+                        MinWidth="78"
+                        IsDefault="True"
+                        Click="CloseButton_OnClick" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>
