@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cpu="clr-namespace:VistaWidgets.App.Widgets.CpuMeter"
              Width="184"
-             Height="128"
+             Height="152"
              UseLayoutRounding="True"
              SnapsToDevicePixels="True"
              ToolTip="{Binding DebugTooltip}">
     <Grid Background="Transparent">
         <cpu:GaugeControl Width="80"
                           Height="80"
-                          Margin="96,4,0,0"
+                          Margin="96,8,0,0"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top"
                           Label="RAM"
@@ -25,9 +25,9 @@
             </cpu:GaugeControl.Effect>
         </cpu:GaugeControl>
 
-        <Ellipse Width="114"
-                 Height="114"
-                 Margin="9,15,0,0"
+        <Ellipse Width="118"
+                 Height="118"
+                 Margin="7,17,0,0"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Top"
                  Fill="#35000000"
@@ -39,7 +39,7 @@
 
         <cpu:GaugeControl Width="108"
                           Height="108"
-                          Margin="8,16,0,0"
+                          Margin="8,18,0,0"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top"
                           Label="CPU"
