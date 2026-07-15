@@ -34,6 +34,13 @@ def main() -> int:
     manifest_root = ElementTree.parse(MANIFEST).getroot()
     identity = next(item for item in manifest_root.iter() if item.tag.rsplit("}", 1)[-1] == "Identity")
     package_version = identity.attrib["Version"]
+    resource_languages = {
+        item.attrib.get("Language", "").lower()
+        for item in manifest_root.iter()
+        if item.tag.rsplit("}", 1)[-1] == "Resource"
+    }
+    if "en-us" not in resource_languages:
+        errors.append("manifest must declare en-us as a supported resource language")
 
     script = BUILD_SCRIPT.read_text(encoding="utf-8-sig")
     match = re.search(r'\[string\]\$Version\s*=\s*"([^"]+)"', script)
