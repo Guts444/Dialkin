@@ -1,6 +1,6 @@
 # Adding a New Widget
 
-1. Create a folder under `src/VistaWidgets.App/Widgets/<WidgetName>`.
+1. Create a folder under `src/Dialkin.App/Widgets/<WidgetName>`.
 2. Add a WPF view and view model for the widget.
 3. Implement `IWidget`.
 4. Use `WidgetSettings` for persisted state instead of writing widget-specific files unless the widget needs extra data.

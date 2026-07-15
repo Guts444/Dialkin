@@ -1,68 +1,80 @@
-# Vista Widgets
+# Dialkin
 
-Vista Widgets is a native Windows 11 recreation of the Windows Vista / Windows 7 desktop gadget experience, starting with a faithful CPU Meter widget.
+**Little instruments for your desktop.**
 
-The project is built with C#/.NET 8 and WPF. It does not use the retired `.gadget` platform, Internet Explorer hosting, ActiveX, Sidebar APIs, or copied Microsoft assets.
+Dialkin is a lightweight native Windows widget app, beginning with a faithful reimagining of the Windows Vista / Windows 7 CPU Meter. It uses original vector rendering and current Windows APIs rather than the retired Sidebar gadget platform or copied Microsoft assets.
 
-## Current Release
+> The current development version is `0.2.0`. It is technically prepared for Microsoft Store packaging, but has not been submitted or published there yet.
 
-Version: `0.1.0`
+## Highlights
 
-The first public release focuses on the classic CPU Meter:
-
-- Vista/Windows 7-inspired paired CPU and RAM analog gauges.
-- Freshly drawn chrome bezels, gauge faces, ticks, warning color bands, needles, shadows, and percent readouts.
-- CPU gauge for total system CPU usage.
-- RAM gauge for physical memory usage.
-- Smooth needle animation between samples.
-- Frameless transparent desktop widget.
-- Dragging, saved position, opacity, size, always-on-top, lock, and click-through options.
-- Tray icon, tray menu, widget context menu, and settings window.
-- Settings saved in `%APPDATA%\VistaWidgets\settings.json`.
-- No telemetry, ads, network calls, or third-party runtime packages.
+- Paired analog gauges for total CPU and physical memory usage.
+- Native C#/.NET 10 WPF application—no Electron or browser runtime.
+- Original chrome, faces, ticks, warning bands, needles, shadows, and icons.
+- Smooth animated needles with cached static gauge artwork.
+- Frameless transparent widget with multi-monitor-aware placement.
+- Saved position, opacity, size, visibility, update interval, and lock state.
+- Always-on-top and click-through modes.
+- Tray menu, widget context menu, and accessible settings controls.
+- Start-with-Windows support for both portable and MSIX installations.
+- Atomic settings writes with backup and corrupt-file recovery.
+- Single-instance enforcement.
+- No telemetry, ads, accounts, network calls, or third-party runtime packages.
 
 ## Requirements
 
+### Running
+
+- Windows 10 version 2004 or newer, or Windows 11.
+- x64 processor.
+- No separate .NET installation is needed for the self-contained release or MSIX package.
+
+### Building
+
 - Windows 10/11.
-- .NET 8 SDK for building from source.
-- .NET 8 Desktop Runtime if running a framework-dependent build.
+- .NET SDK `10.0.301` or a compatible servicing release. `global.json` selects it automatically.
+- Windows SDK with `MakeAppx.exe` and `SignTool.exe` for MSIX packaging.
 
-## Build And Run
-
-```powershell
-dotnet build
-dotnet run --project src/VistaWidgets.App
-```
-
-Run the lightweight test console:
+Regenerating artwork additionally requires Python 3 and Pillow:
 
 ```powershell
-dotnet run --project tests/VistaWidgets.Tests
+python -m pip install Pillow
+python scripts\generate-assets.py
 ```
 
-## Share Locally
-
-There is no MSI installer yet. The easiest local sharing path for `v0.1.0` is to publish a Windows build and zip the output folder.
-
-Framework-dependent build, smaller download, requires .NET 8 Desktop Runtime on the target PC:
+## Build, test, and run
 
 ```powershell
-dotnet publish src/VistaWidgets.App -c Release -r win-x64 --self-contained false -o artifacts\VistaWidgets-0.1.0-win-x64
-Compress-Archive -Path artifacts\VistaWidgets-0.1.0-win-x64\* -DestinationPath artifacts\VistaWidgets-0.1.0-win-x64.zip -Force
+dotnet restore
+dotnet test Dialkin.sln -c Release
+dotnet run --project src/Dialkin.App
 ```
 
-Self-contained build, larger download, does not require users to install .NET first:
+Create a self-contained portable build:
 
 ```powershell
-dotnet publish src/VistaWidgets.App -c Release -r win-x64 --self-contained true -o artifacts\VistaWidgets-0.1.0-win-x64-self-contained
-Compress-Archive -Path artifacts\VistaWidgets-0.1.0-win-x64-self-contained\* -DestinationPath artifacts\VistaWidgets-0.1.0-win-x64-self-contained.zip -Force
+dotnet publish src/Dialkin.App -c Release -r win-x64 --self-contained true -o artifacts\Dialkin-0.2.0-win-x64-self-contained
 ```
 
-Users can unzip the folder and run `VistaWidgets.App.exe`.
+Create the development MSIX package:
 
-An MSI/MSIX installer is not included yet. A future installer can be added with WiX Toolset, MSIX packaging, or another Windows installer pipeline.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-msix.ps1 -SignWithTestCertificate
+```
 
-## Menus
+See [Release and packaging](docs/releasing.md) for package identity, local testing, and Partner Center instructions.
+
+## Settings and migration
+
+Portable settings are stored at:
+
+```text
+%APPDATA%\Dialkin\settings.json
+```
+
+MSIX installations use the equivalent Windows-managed package data location. On first launch, Dialkin copies compatible settings from the former `%APPDATA%\VistaWidgets` directory when no Dialkin settings exist.
+
+## Controls
 
 Widget right-click menu:
 
@@ -76,53 +88,25 @@ Widget right-click menu:
 
 Tray menu:
 
-- Show/Hide CPU Meter
-- Lock/Unlock widgets
-- Click-through CPU Meter
+- Show or hide CPU Meter
+- Lock or unlock widgets
+- Toggle click-through mode
 - Start with Windows
 - Settings
 - Exit
 
-## Manual Test Checklist
+## Privacy
 
-- Launch on Windows 11.
-- Drag the widget, exit, relaunch, and confirm position is restored.
-- Lock position and confirm dragging stops.
-- Enable/disable always-on-top.
-- Enable/disable click-through from the tray after testing it from the widget menu.
-- Compare CPU and RAM values roughly against Task Manager.
-- Test at 125%, 150%, and 200% display scaling.
-- Move across monitors and confirm position remains valid.
-- Sleep/resume the PC and confirm CPU sampling recovers.
+CPU and memory values are processed locally and never transmitted. Dialkin contains no telemetry, analytics, advertising, accounts, or networking. See the full [privacy policy](PRIVACY.md).
 
-## Project Notes
+## Documentation
 
 - [Architecture](docs/architecture.md)
-- [CPU Meter research](docs/research-cpu-meter.md)
 - [Adding a new widget](docs/adding-new-widget.md)
-- [Release process](docs/releasing.md)
+- [Release and MSIX packaging](docs/releasing.md)
+- [Microsoft Store readiness](docs/store-readiness.md)
 - [Changelog](CHANGELOG.md)
 
 ## License
 
-MIT License
-
-Copyright (c) 2026 Vista Widgets contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+[MIT](LICENSE) © 2026 Dialkin contributors.

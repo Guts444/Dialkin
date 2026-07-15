@@ -1,6 +1,6 @@
 # Architecture
 
-Vista Widgets is a Windows-only .NET 8 WPF app. It recreates Vista-style desktop gadgets without using the legacy Windows Gadget Platform.
+Dialkin is a Windows-only .NET 10 WPF app. It recreates the useful, tactile feel of classic desktop gadgets without using the legacy Windows Gadget Platform.
 
 ## Layers
 
@@ -10,7 +10,7 @@ Vista Widgets is a Windows-only .NET 8 WPF app. It recreates Vista-style desktop
 
 ## Current Public Version
 
-The first public release is `0.1.0`. It intentionally ships one widget: a Vista/Windows 7-inspired CPU Meter with paired CPU and RAM gauges.
+The current development version is `0.2.0`. It intentionally ships one widget: a Vista/Windows 7-inspired CPU Meter with paired CPU and RAM gauges.
 
 ## Widget Contract
 
@@ -27,9 +27,11 @@ Widgets can optionally implement `IWidgetSystemEvents` to react to sleep/resume 
 
 ## Settings
 
-Settings are saved as JSON at:
+Portable settings are saved as JSON at:
 
-`%APPDATA%\VistaWidgets\settings.json`
+`%APPDATA%\Dialkin\settings.json`
+
+The MSIX build uses the corresponding Windows-managed package data path. Writes are atomic, the previous valid file is retained as a backup, corrupt primary files are quarantined, and settings from `%APPDATA%\VistaWidgets` are copied on first launch after the rename.
 
 Persisted values include position, lock state, opacity, always-on-top, click-through mode, startup preference, update interval, and theme variant.
 
