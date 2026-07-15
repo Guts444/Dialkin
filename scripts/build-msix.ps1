@@ -2,8 +2,8 @@
 param(
     [string]$Configuration = "Release",
     [string]$Version = "1.0.2.0",
-    [string]$IdentityName = "Guts444.Dialkin.Development",
-    [string]$Publisher = "CN=Guts444-Dialkin-Development",
+    [string]$IdentityName = "Guts444.Dialkin",
+    [string]$Publisher = "CN=0CE853A2-4D9A-43A6-B4CC-9371C515BC1C",
     [string]$PublisherDisplayName = "Guts444",
     [string]$WindowsSdkVersion = "10.0.26100.0",
     [switch]$RequireCleanWorktree,

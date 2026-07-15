@@ -1,6 +1,6 @@
 # Microsoft Store readiness
 
-Dialkin is prepared as an x64 self-contained packaged classic Windows application. This document records the values and decisions needed when the Partner Center submission begins. It is not authorization to publish.
+Dialkin is prepared as an x64 self-contained packaged classic Windows application. This document records the values and decisions used for the Partner Center submission. Product publication still requires Microsoft certification.
 
 ## Suggested listing
 
@@ -27,7 +27,7 @@ Dialkin is prepared as an x64 self-contained packaged classic Windows applicatio
 - Trust level: medium integrity
 - Capability: `runFullTrust`
 - Startup task: `Dialkin.Startup`, disabled by default
-- Development identity version: `1.0.2.0`
+- Store identity version: `1.0.2.0`
 - Public product version: `0.2.0`
 
 ## `runFullTrust` justification
@@ -55,25 +55,25 @@ Suggested Partner Center text:
 
 Partner Center screenshots still need to be captured from the final build. Do not use screenshots containing unrelated desktop content or private information.
 
-## Values that must come from Partner Center
+## Partner Center identity
 
-After reserving the product, replace the development placeholders with the exact values shown under **Product identity**:
+Dialkin was reserved in Partner Center on July 15, 2026. The package manifest uses the exact assigned values:
 
-- Package Identity Name
-- Package Identity Publisher
-- Publisher display name
-
-The final Store package must not use `Guts444.Dialkin.Development` or `CN=Guts444-Dialkin-Development`.
+- Package Identity Name: `Guts444.Dialkin`
+- Package Identity Publisher: `CN=0CE853A2-4D9A-43A6-B4CC-9371C515BC1C`
+- Publisher display name: `Guts444`
+- Store ID: `9N9GGH4B57N3`
+- Package family name: `Guts444.Dialkin_jtc3039kpntyp`
 
 ## Submission boundary checklist
 
-- [ ] Reserve **Dialkin** in Partner Center.
-- [ ] Copy exact Store identity values into the package build.
+- [x] Reserve **Dialkin** in Partner Center.
+- [x] Copy exact Store identity values into the package build.
 - [ ] Rebuild the Store-targeted MSIX.
 - [ ] Run Windows App Certification Kit against that exact artifact.
 - [ ] Install, update, startup-toggle, and uninstall test in a clean VM/profile.
-- [ ] Publish the privacy policy at a stable public URL.
+- [x] Publish the privacy policy at a stable public URL.
 - [ ] Capture final screenshots.
 - [ ] Review age rating, markets, pricing, and availability.
 - [ ] Review the `runFullTrust` declaration and justification.
-- [ ] Submit only after explicit final approval.
+- [x] Receive explicit approval to submit for certification.

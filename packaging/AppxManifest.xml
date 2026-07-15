@@ -8,8 +8,8 @@
   IgnorableNamespaces="uap uap10 desktop rescap">
 
   <Identity
-    Name="Guts444.Dialkin.Development"
-    Publisher="CN=Guts444-Dialkin-Development"
+    Name="Guts444.Dialkin"
+    Publisher="CN=0CE853A2-4D9A-43A6-B4CC-9371C515BC1C"
     Version="1.0.2.0"
     ProcessorArchitecture="x64" />
 

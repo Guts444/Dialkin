@@ -82,7 +82,7 @@ Add-AppxPackage -Register .\artifacts\msix\stage\AppxManifest.xml
 Launch `Dialkin` from Start, then remove the development registration:
 
 ```powershell
-Get-AppxPackage Guts444.Dialkin.Development | Remove-AppxPackage
+Get-AppxPackage Guts444.Dialkin | Remove-AppxPackage
 ```
 
 This exercises package identity, the packaged-classic-app entry point, package-local settings, and startup-task registration. It does not replace testing the final Store-associated MSIX.
