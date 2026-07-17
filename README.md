@@ -29,6 +29,20 @@ The current public version is `0.2.0`.
 - Single-instance enforcement.
 - No telemetry, ads, accounts, network calls, or third-party runtime packages.
 
+## Screenshots
+
+### CPU Meter widget
+
+![Dialkin CPU Meter widget on the Windows desktop](assets/screenshots/widget.png)
+
+### Widget context menu
+
+![Dialkin widget context menu](assets/screenshots/context-menu.png)
+
+### Settings
+
+![Dialkin settings window](assets/screenshots/settings.png)
+
 ## Requirements
 
 ### Running
