@@ -115,6 +115,30 @@ CPU and memory values are processed locally and never transmitted. Dialkin conta
 - [Microsoft Store readiness](docs/store-readiness.md)
 - [Changelog](CHANGELOG.md)
 
+## Donations
+
+If you enjoy Dialkin, donations help support continued fixes and improvements.
+
+Bitcoin:
+
+```text
+3LYX3oEDCzz5S7oQjPmYQYi7ZGoA5XpCdM
+```
+
+Ethereum:
+
+```text
+0x1246dFAf32E435d79689852A3304ca384A73c1cb
+```
+
+Solana:
+
+```text
+Aqm2mLHikyZ5guTf7pKcaXjNXG69ifrDRY2324h79ony
+```
+
+Thank you for the support.
+
 ## License
 
 [MIT](LICENSE) © 2026 Dialkin contributors.
