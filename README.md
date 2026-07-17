@@ -4,7 +4,15 @@
 
 Dialkin is a lightweight native Windows widget app, beginning with a faithful reimagining of the Windows Vista / Windows 7 CPU Meter. It uses original vector rendering and current Windows APIs rather than the retired Sidebar gadget platform or copied Microsoft assets.
 
-> The current development version is `0.2.0`. It is technically prepared for Microsoft Store packaging, but has not been submitted or published there yet.
+## Download
+
+[![Download from the Microsoft Store](https://get.microsoft.com/images/en-us%20dark.svg)](https://apps.microsoft.com/detail/9N9GGH4B57N3)
+
+Install Dialkin from the [Microsoft Store](https://apps.microsoft.com/detail/9N9GGH4B57N3). The Store handles installation and future updates automatically.
+
+The source code, documentation, and development instructions are available in the [Dialkin GitHub repository](https://github.com/Guts444/Dialkin).
+
+The current public version is `0.2.0`.
 
 ## Highlights
 
